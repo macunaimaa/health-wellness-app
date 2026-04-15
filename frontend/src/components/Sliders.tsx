@@ -1,62 +1,82 @@
-interface SliderProps {
+interface EmojiLevelProps {
   value: number;
   onChange: (value: number) => void;
-  labels: Record<number, string>;
-  color?: string;
+  config: { emoji: string; label: string; color: string }[];
 }
 
-export function EnergySlider({ value, onChange, labels, color = 'emerald' }: SliderProps) {
-  const colorMap: Record<string, string> = {
-    emerald: 'bg-emerald-500 border-emerald-600 text-white',
-    amber: 'bg-amber-500 border-amber-600 text-white',
-    blue: 'bg-blue-500 border-blue-600 text-white',
-  };
-
+function EmojiLevel({ value, onChange, config }: EmojiLevelProps) {
   return (
     <div className="space-y-3">
       <div className="flex gap-2">
-        {[1, 2, 3, 4, 5].map((level) => (
-          <button
-            key={level}
-            type="button"
-            onClick={() => onChange(level)}
-            className={`flex h-12 flex-1 items-center justify-center rounded-xl border-2 text-lg font-bold transition-all duration-200 ${
-              value === level
-                ? colorMap[color] || colorMap.emerald
-                : 'border-slate-200 bg-white text-slate-400 hover:border-slate-300'
-            }`}
-          >
-            {level}
-          </button>
-        ))}
+        {config.map((item, i) => {
+          const level = i + 1;
+          const isSelected = value === level;
+          return (
+            <button
+              key={level}
+              type="button"
+              onClick={() => onChange(level)}
+              className={`flex flex-1 flex-col items-center gap-1 rounded-2xl border-2 py-3 transition-all duration-200 active:scale-95 ${
+                isSelected
+                  ? `${item.color} shadow-md scale-105`
+                  : 'border-slate-200 bg-white hover:border-slate-300'
+              }`}
+            >
+              <span className={`text-2xl transition-transform duration-200 ${isSelected ? 'scale-110' : ''}`}>
+                {item.emoji}
+              </span>
+            </button>
+          );
+        })}
       </div>
       {value > 0 && (
-        <p className="text-center text-sm font-medium text-slate-600">{labels[value]}</p>
+        <p className="text-center text-sm font-semibold text-slate-600 transition-all duration-200">
+          {config[value - 1].label}
+        </p>
       )}
     </div>
   );
 }
 
-export function StressSlider({ value, onChange }: Omit<SliderProps, 'labels'>) {
-  const labels: Record<number, string> = {
-    1: 'Muito baixo',
-    2: 'Baixo',
-    3: 'Moderado',
-    4: 'Alto',
-    5: 'Muito alto',
-  };
+const ENERGY_CONFIG = [
+  { emoji: '😴', label: 'Sem energia', color: 'border-slate-400 bg-slate-50 text-slate-600' },
+  { emoji: '😕', label: 'Energia baixa', color: 'border-orange-400 bg-orange-50 text-orange-600' },
+  { emoji: '😐', label: 'Energia ok', color: 'border-amber-400 bg-amber-50 text-amber-600' },
+  { emoji: '😊', label: 'Bem disposto', color: 'border-emerald-400 bg-emerald-50 text-emerald-600' },
+  { emoji: '⚡', label: 'Cheio de energia!', color: 'border-emerald-600 bg-emerald-100 text-emerald-700' },
+];
 
-  return <EnergySlider value={value} onChange={onChange} labels={labels} color="amber" />;
+const STRESS_CONFIG = [
+  { emoji: '😌', label: 'Muito tranquilo', color: 'border-emerald-400 bg-emerald-50 text-emerald-600' },
+  { emoji: '🙂', label: 'Tranquilo', color: 'border-blue-400 bg-blue-50 text-blue-600' },
+  { emoji: '😐', label: 'Estresse moderado', color: 'border-amber-400 bg-amber-50 text-amber-600' },
+  { emoji: '😰', label: 'Bem estressado', color: 'border-orange-400 bg-orange-50 text-orange-600' },
+  { emoji: '🤯', label: 'Muito estressado', color: 'border-red-500 bg-red-50 text-red-600' },
+];
+
+const SLEEP_CONFIG = [
+  { emoji: '😫', label: 'Noite péssima', color: 'border-red-400 bg-red-50 text-red-600' },
+  { emoji: '😕', label: 'Dormi mal', color: 'border-orange-400 bg-orange-50 text-orange-600' },
+  { emoji: '😐', label: 'Sono regular', color: 'border-amber-400 bg-amber-50 text-amber-600' },
+  { emoji: '😌', label: 'Dormi bem', color: 'border-blue-400 bg-blue-50 text-blue-600' },
+  { emoji: '✨', label: 'Sono excelente!', color: 'border-purple-400 bg-purple-50 text-purple-600' },
+];
+
+interface SliderProps {
+  value: number;
+  onChange: (value: number) => void;
+  labels?: Record<number, string>;
+  color?: string;
+}
+
+export function EnergySlider({ value, onChange }: SliderProps) {
+  return <EmojiLevel value={value} onChange={onChange} config={ENERGY_CONFIG} />;
+}
+
+export function StressSlider({ value, onChange }: Omit<SliderProps, 'labels'>) {
+  return <EmojiLevel value={value} onChange={onChange} config={STRESS_CONFIG} />;
 }
 
 export function SleepSlider({ value, onChange }: Omit<SliderProps, 'labels'>) {
-  const labels: Record<number, string> = {
-    1: 'Muito ruim',
-    2: 'Ruim',
-    3: 'Regular',
-    4: 'Boa',
-    5: 'Muito boa',
-  };
-
-  return <EnergySlider value={value} onChange={onChange} labels={labels} color="blue" />;
+  return <EmojiLevel value={value} onChange={onChange} config={SLEEP_CONFIG} />;
 }

@@ -18,6 +18,8 @@ export class MealService {
     contextType: string;
     availableMinutes: number;
     energyLevel: number;
+    stressLevel?: number;
+    sleepQuality?: number;
     dietaryPreferences: string[];
     dietaryRestrictions: string[];
     mealWindow?: string;

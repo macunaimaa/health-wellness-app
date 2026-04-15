@@ -206,6 +206,8 @@ export class RecommendationService {
         contextType,
         availableMinutes: checkin.available_minutes || 30,
         energyLevel: checkin.energy_level,
+        stressLevel: checkin.stress_level,
+        sleepQuality: checkin.sleep_quality,
         dietaryPreferences: profile.dietary_preferences_json,
         dietaryRestrictions: profile.dietary_restrictions_json,
         equipment: checkin.equipment_access_json,
@@ -232,7 +234,7 @@ export class RecommendationService {
       }) : Promise.resolve([]),
       isTravel ? travelService.getTravelMeals(contextType, profile.dietary_restrictions_json) : Promise.resolve([]),
       isTravel ? travelService.getTravelTips(contextType) : Promise.resolve([]),
-      generateHydrationRecommendation(checkin.energy_level),
+      generateHydrationRecommendation(checkin.energy_level, checkin.stress_level, contextType),
     ]);
 
     for (const meal of mealRecs) {
