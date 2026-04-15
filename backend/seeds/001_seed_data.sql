@@ -1,33 +1,22 @@
+-- Tenant demo
 INSERT INTO tenants (id, name, status) VALUES
   ('a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', 'Demo Corp', 'active');
 
+-- Usuários demo (senha: demo123)
 INSERT INTO users (id, tenant_id, email, password_hash, full_name, role, timezone, locale, status) VALUES
   ('b0eebc99-9c0b-4ef8-bb6d-6bb9bd380a21', 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', 'admin@democorp.com', '$2b$10$rTOe4.QggIlq472V5wyAFeH48c4Wn7XcyM7zXHE36SBv/NU47w6bW', 'Admin Demo', 'admin', 'America/Sao_Paulo', 'pt-BR', 'active'),
   ('b0eebc99-9c0b-4ef8-bb6d-6bb9bd380a22', 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', 'carlos@democorp.com', '$2b$10$rTOe4.QggIlq472V5wyAFeH48c4Wn7XcyM7zXHE36SBv/NU47w6bW', 'Carlos Silva', 'user', 'America/Sao_Paulo', 'pt-BR', 'active');
 
+-- Perfil do usuário demo
 INSERT INTO user_profiles (id, tenant_id, user_id, age_range, biological_sex_optional, height_cm_optional, weight_kg_optional, fitness_level, travel_frequency, primary_goal, secondary_goals_json, dietary_preferences_json, dietary_restrictions_json, physical_limitations_json, preferred_workout_types_json, preferred_meal_style_json, sleep_goal_hours_optional) VALUES
   ('c0eebc99-9c0b-4ef8-bb6d-6bb9bd380a31', 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', 'b0eebc99-9c0b-4ef8-bb6d-6bb9bd380a22', '35-44', 'male', 178, 82.5, 'light', 'weekly', 'energy', '["weight_loss", "stress_reduction"]', '["mediterranean", "high_protein"]', '["lactose_intolerant"]', '[]', '["walking", "bodyweight", "swimming"]', 'balanced', 7.5);
 
-INSERT INTO daily_checkins (id, tenant_id, user_id, checkin_date, energy_level, stress_level, sleep_quality, available_minutes, context_type, location_context_json, meal_windows_json, equipment_access_json, notes_optional) VALUES
-  ('d0eebc99-9c0b-4ef8-bb6d-6bb9bd380a41', 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', 'b0eebc99-9c0b-4ef8-bb6d-6bb9bd380a22', CURRENT_DATE - INTERVAL '2 days', 3, 3, 3, 30, 'office', '{"city": "Sao Paulo"}', '[{"start": "07:00", "end": "08:00"}, {"start": "12:00", "end": "13:00"}, {"start": "19:00", "end": "20:30"}]', '[]', 'Dia normal no escritorio'),
-  ('d0eebc99-9c0b-4ef8-bb6d-6bb9bd380a42', 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', 'b0eebc99-9c0b-4ef8-bb6d-6bb9bd380a22', CURRENT_DATE - INTERVAL '1 day', 2, 4, 2, 15, 'travel', '{"city": "Rio de Janeiro", "hotel": "Copacabana Palace"}', '[{"start": "06:30", "end": "07:00"}, {"start": "12:30", "end": "13:00"}, {"start": "20:00", "end": "21:00"}]', '[]', 'Reuniao em cliente, dia corrido'),
-  ('d0eebc99-9c0b-4ef8-bb6d-6bb9bd380a43', 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', 'b0eebc99-9c0b-4ef8-bb6d-6bb9bd380a22', CURRENT_DATE, 4, 2, 4, 45, 'home', '{"city": "Sao Paulo"}', '[{"start": "07:00", "end": "08:00"}, {"start": "12:00", "end": "13:30"}, {"start": "19:30", "end": "21:00"}]', '["dumbbells", "mat"]', 'Dia livre, bem descansado');
-
-INSERT INTO recommendations (id, tenant_id, user_id, checkin_id, recommendation_type, title, summary, rationale, payload_json, intensity_level_optional, status, generated_at, valid_until) VALUES
-  ('e0eebc99-9c0b-4ef8-bb6d-6bb9bd380a51', 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', 'b0eebc99-9c0b-4ef8-bb6d-6bb9bd380a22', 'd0eebc99-9c0b-4ef8-bb6d-6bb9bd380a41', 'meal', 'Bowl Mediterrâneo de Atum', 'Atum grelhado com quinoa, tomate, pepino, azeitonas e azeite', 'Refeição balanceada rica em proteína e ômega-3, ideal para manter a energia no escritório', '{"calories": 520, "protein_g": 42, "carbs_g": 45, "fat_g": 18, "prep_minutes": 15}', 'moderate', 'completed', NOW() - INTERVAL '2 days', NOW() - INTERVAL '1 day'),
-  ('e0eebc99-9c0b-4ef8-bb6d-6bb9bd380a52', 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', 'b0eebc99-9c0b-4ef8-bb6d-6bb9bd380a22', 'd0eebc99-9c0b-4ef8-bb6d-6bb9bd380a41', 'workout', 'Caminhada Rápida no Almoço', '20 minutos de caminhada em ritmo acelerado ao ar livre', 'Quebra o sedentarismo do escritório, melhora circulação e clareza mental para a tarde', '{"duration_minutes": 20, "exercises": [{"name": "Caminhada rápida", "duration_minutes": 20}]}', 'low', 'completed', NOW() - INTERVAL '2 days', NOW() - INTERVAL '1 day'),
-  ('e0eebc99-9c0b-4ef8-bb6d-6bb9bd380a53', 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', 'b0eebc99-9c0b-4ef8-bb6d-6bb9bd380a22', 'd0eebc99-9c0b-4ef8-bb6d-6bb9bd380a42', 'meal', 'Wrap de Frango com Abacate', 'Wrap integral com frango desfiado, abacate, rúcula e molho de iogurte (sem lactose)', 'Refeição prática para viagem, sem lactose, rica em proteínas e gorduras boas', '{"calories": 480, "protein_g": 35, "carbs_g": 38, "fat_g": 20, "prep_minutes": 10}', 'low', 'dismissed', NOW() - INTERVAL '1 day', NOW()),
-  ('e0eebc99-9c0b-4ef8-bb6d-6bb9bd380a54', 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', 'b0eebc99-9c0b-4ef8-bb6d-6bb9bd380a22', 'd0eebc99-9c0b-4ef8-bb6d-6bb9bd380a42', 'recovery', 'Alongamento e Respiração no Quarto', '10 minutos de alongamento guiado com exercícios de respiração 4-7-8', 'Com baixa energia e alto estresse em viagem, priorize recuperação', '{"duration_minutes": 10, "techniques": ["alongamento pescoço/ombros", "respiração 4-7-8", "rotação de tronco"]}', 'low', 'completed', NOW() - INTERVAL '1 day', NOW());
-
-INSERT INTO recommendation_feedback (id, tenant_id, user_id, recommendation_id, feedback_type, score_optional, reason_code_optional, comment_optional, created_at) VALUES
-  ('f0eebc99-9c0b-4ef8-bb6d-6bb9bd380a61', 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', 'b0eebc99-9c0b-4ef8-bb6d-6bb9bd380a22', 'e0eebc99-9c0b-4ef8-bb6d-6bb9bd380a51', 'completed', 5, 'tasty', 'Adorei, vou repetir!', NOW() - INTERVAL '2 days'),
-  ('f0eebc99-9c0b-4ef8-bb6d-6bb9bd380a62', 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', 'b0eebc99-9c0b-4ef8-bb6d-6bb9bd380a22', 'e0eebc99-9c0b-4ef8-bb6d-6bb9bd380a52', 'completed', 4, 'felt_good', 'Me senti mais disposto à tarde', NOW() - INTERVAL '2 days'),
-  ('f0eebc99-9c0b-4ef8-bb6d-6bb9bd380a63', 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', 'b0eebc99-9c0b-4ef8-bb6d-6bb9bd380a22', 'e0eebc99-9c0b-4ef8-bb6d-6bb9bd380a53', 'dismissed', 2, 'not_convenient', 'Não encontrei os ingredientes no hotel', NOW() - INTERVAL '1 day'),
-  ('f0eebc99-9c0b-4ef8-bb6d-6bb9bd380a64', 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', 'b0eebc99-9c0b-4ef8-bb6d-6bb9bd380a22', 'e0eebc99-9c0b-4ef8-bb6d-6bb9bd380a54', 'completed', 5, 'relaxing', 'Perfeito para relaxar antes de dormir', NOW() - INTERVAL '1 day');
-
+-- Lembretes padrão
 INSERT INTO reminders (id, tenant_id, user_id, reminder_type, schedule_json, channel, active) VALUES
-  ('a1eebc99-9c0b-4ef8-bb6d-6bb9bd380a71', 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', 'b0eebc99-9c0b-4ef8-bb6d-6bb9bd380a22', 'hydration', '{"times": ["09:00", "11:00", "14:00", "16:00", "18:00"], "message": "Hora de beber água!"}', 'in_app', true),
-  ('a1eebc99-9c0b-4ef8-bb6d-6bb9bd380a72', 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', 'b0eebc99-9c0b-4ef8-bb6d-6bb9bd380a22', 'movement', '{"times": ["10:00", "15:00"], "message": "Levante e alongue por 5 minutos!"}', 'in_app', true),
-  ('a1eebc99-9c0b-4ef8-bb6d-6bb9bd380a73', 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', 'b0eebc99-9c0b-4ef8-bb6d-6bb9bd380a22', 'meal', '{"times": ["07:00", "12:00", "19:30"], "message": "Hora da refeição!"}', 'in_app', true),
-  ('a1eebc99-9c0b-4ef8-bb6d-6bb9bd380a74', 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', 'b0eebc99-9c0b-4ef8-bb6d-6bb9bd380a22', 'recovery', '{"times": ["22:00"], "message": "Hora de desacelerar. Faça sua rotina de relaxamento."}', 'in_app', true),
-  ('a1eebc99-9c0b-4ef8-bb6d-6bb9bd380a75', 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', 'b0eebc99-9c0b-4ef8-bb6d-6bb9bd380a22', 'workout', '{"times": ["06:30"], "days": ["monday", "wednesday", "friday"], "message": "Hora do treino matinal!"}', 'in_app', true);
+  ('a1eebc99-9c0b-4ef8-bb6d-6bb9bd380a71', 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', 'b0eebc99-9c0b-4ef8-bb6d-6bb9bd380a22', 'hydration', '{"times": ["09:00", "11:00", "14:00", "16:00", "18:00"]}', 'in_app', true),
+  ('a1eebc99-9c0b-4ef8-bb6d-6bb9bd380a72', 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', 'b0eebc99-9c0b-4ef8-bb6d-6bb9bd380a22', 'movement', '{"times": ["10:00", "15:00"]}', 'in_app', true),
+  ('a1eebc99-9c0b-4ef8-bb6d-6bb9bd380a73', 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', 'b0eebc99-9c0b-4ef8-bb6d-6bb9bd380a22', 'meal', '{"times": ["07:00", "12:00", "19:30"]}', 'in_app', true),
+  ('a1eebc99-9c0b-4ef8-bb6d-6bb9bd380a74', 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', 'b0eebc99-9c0b-4ef8-bb6d-6bb9bd380a22', 'recovery', '{"times": ["22:00"]}', 'in_app', true),
+  ('a1eebc99-9c0b-4ef8-bb6d-6bb9bd380a75', 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', 'b0eebc99-9c0b-4ef8-bb6d-6bb9bd380a22', 'workout', '{"times": ["06:30"], "days": ["monday", "wednesday", "friday"]}', 'in_app', true);
+
+-- Check-ins e recomendações são gerados pelo usuário via check-in real + OpenAI
