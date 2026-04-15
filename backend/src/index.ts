@@ -11,6 +11,7 @@ import checkinRoutes from './routes/checkin.routes';
 import recommendationRoutes from './routes/recommendation.routes';
 import reminderRoutes from './routes/reminder.routes';
 import adminRoutes from './routes/admin.routes';
+import resetRoutes from './routes/reset.routes';
 
 const app = express();
 
@@ -28,6 +29,7 @@ app.use('/api/me', checkinRoutes);
 app.use('/api/me', recommendationRoutes);
 app.use('/api/me', reminderRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/me', resetRoutes);
 
 app.get('/api/health', (_req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });

@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { LogOut, Save, User, Bell, Heart, Shield } from 'lucide-react';
+import { LogOut, Save, User, Bell, Heart, Shield, Trash2, AlertTriangle } from 'lucide-react';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import client from '../api/client';
 import { useAuth } from '../hooks/useAuth';
 import { useProfile, useUpdateProfile } from '../hooks/useProfile';
 import { useReminders, useUpdateReminders } from '../hooks/useReminders';
@@ -34,6 +36,19 @@ export function SettingsPage() {
     profile?.mealStyle || ''
   );
   const [successMsg, setSuccessMsg] = useState('');
+  const [showResetConfirm, setShowResetConfirm] = useState(false);
+  const queryClient = useQueryClient();
+
+  const resetData = useMutation({
+    mutationFn: () => client.delete('/reset'),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['todayPlan'] });
+      queryClient.invalidateQueries({ queryKey: ['checkinHistory'] });
+      setShowResetConfirm(false);
+      showSuccess('Dados resetados! Faça um novo check-in.');
+      navigate('/checkin');
+    },
+  });
 
   if (profileLoading || remindersLoading) return <LoadingState message="Carregando..." />;
   if (profileError) return <ErrorMessage message="Erro ao carregar perfil." />;
@@ -319,6 +334,58 @@ export function SettingsPage() {
               )
             )}
           </div>
+        </div>
+
+        {/* Reset de dados */}
+        <div className="rounded-2xl border border-orange-200 bg-orange-50 p-4">
+          <div className="mb-3 flex items-center gap-2">
+            <Trash2 size={16} className="text-orange-600" />
+            <h3 className="text-sm font-semibold text-orange-800">Resetar dados</h3>
+          </div>
+          <p className="mb-3 text-xs text-orange-700 leading-relaxed">
+            Apaga todos os check-ins e recomendações. Útil para testar o app do zero. Perfil e configurações são mantidos.
+          </p>
+
+          {!showResetConfirm ? (
+            <button
+              onClick={() => setShowResetConfirm(true)}
+              className="flex items-center gap-2 rounded-xl border border-orange-300 bg-white px-4 py-2.5 text-sm font-semibold text-orange-600 transition-all hover:bg-orange-100 active:scale-95"
+            >
+              <Trash2 size={15} />
+              Resetar dados
+            </button>
+          ) : (
+            <div className="space-y-2">
+              <div className="flex items-start gap-2 rounded-xl bg-orange-100 p-3">
+                <AlertTriangle size={16} className="mt-0.5 shrink-0 text-orange-600" />
+                <p className="text-xs font-medium text-orange-800">
+                  Tem certeza? Isso apaga todos os check-ins e recomendações permanentemente.
+                </p>
+              </div>
+              <div className="flex gap-2">
+                <button
+                  onClick={() => setShowResetConfirm(false)}
+                  className="flex-1 rounded-xl border border-slate-200 bg-white py-2.5 text-sm font-semibold text-slate-600 transition hover:bg-slate-50 active:scale-95"
+                >
+                  Cancelar
+                </button>
+                <button
+                  onClick={() => resetData.mutate()}
+                  disabled={resetData.isPending}
+                  className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-orange-600 py-2.5 text-sm font-bold text-white transition hover:bg-orange-700 disabled:opacity-50 active:scale-95"
+                >
+                  {resetData.isPending ? (
+                    <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                  ) : (
+                    <>
+                      <Trash2 size={14} />
+                      Confirmar reset
+                    </>
+                  )}
+                </button>
+              </div>
+            </div>
+          )}
         </div>
 
         <button
